@@ -5,14 +5,12 @@ import org.apache.kafka.clients.admin.*;
 import org.apache.kafka.clients.consumer.OffsetAndMetadata;
 import org.apache.kafka.common.KafkaFuture;
 import org.apache.kafka.common.TopicPartition;
+import org.apache.kafka.common.requests.DescribeLogDirsResponse;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Map;
-import java.util.Properties;
+import java.util.*;
 import java.util.concurrent.ExecutionException;
 
 public class KafkaAdminClientTest {
@@ -23,10 +21,7 @@ public class KafkaAdminClientTest {
     private static AdminClient adminClient;
 
 
-
-
-    public static void main(String[] args) throws IOException {
-
+    private static void initialize(){
         Properties properties = new Properties();
         //sasl认证
 //        properties.put("security.protocol","SASL_PLAINTEXT");
@@ -34,17 +29,42 @@ public class KafkaAdminClientTest {
 //        properties.put("sasl.jaas.config","org.apache.kafka.common.security.plain.PlainLoginModule required username='alice' password='alice';");
         properties.put(CommonClientConfigs.BOOTSTRAP_SERVERS_CONFIG, brokerUrl);
         adminClient = AdminClient.create(properties);
+    }
+
+
+    public static void main(String[] args) throws IOException {
+
+        initialize();
 
         try {
 //            listTopicsIncludeInternal();
-            listConsumerGroupOffsets("xj-0");
-        } catch (ExecutionException e) {
-            e.printStackTrace();
-        } catch (InterruptedException e) {
+//            listConsumerGroupOffsets("xj-0");
+            describeLogDirs();
+        } catch (Exception e) {
             e.printStackTrace();
         }
 
 
+    }
+
+    public static long getTopicDiskSizeForSomeBroker(String topic, int brokerID)
+            throws ExecutionException, InterruptedException {
+        long sum = 0;
+        DescribeLogDirsResult ret = adminClient.describeLogDirs(Collections.singletonList(brokerID));
+        Map<Integer, Map<String, DescribeLogDirsResponse.LogDirInfo>> tmp = ret.all().get();
+        for (Map.Entry<Integer, Map<String, DescribeLogDirsResponse.LogDirInfo>> entry : tmp.entrySet()) {
+            Map<String, DescribeLogDirsResponse.LogDirInfo> tmp1 = entry.getValue();
+            for (Map.Entry<String, DescribeLogDirsResponse.LogDirInfo> entry1 : tmp1.entrySet()) {
+                DescribeLogDirsResponse.LogDirInfo info = entry1.getValue();
+                Map<TopicPartition, DescribeLogDirsResponse.ReplicaInfo> replicaInfoMap = info.replicaInfos;
+                for (Map.Entry<TopicPartition, DescribeLogDirsResponse.ReplicaInfo> replicas : replicaInfoMap.entrySet()) {
+                    if (topic.equals(replicas.getKey().topic())) {
+                        sum += replicas.getValue().size;
+                    }
+                }
+            }
+        }
+        return sum;
     }
 
     public void createTopics(){
@@ -66,6 +86,19 @@ public class KafkaAdminClientTest {
         System.out.println(topics);
     }
 
+    public static void describeLogDirs() throws ExecutionException, InterruptedException {
+        ArrayList<Integer> integers = new ArrayList<>();
+        integers.add(1);
+        integers.add(2);
+        integers.add(3);
+        DescribeLogDirsResult describeLogDirsResult = adminClient.describeLogDirs(integers);
+        Map<Integer, Map<String, DescribeLogDirsResponse.LogDirInfo>> integerMapMap = describeLogDirsResult.all().get();
+        for(Map.Entry<Integer, Map<String, DescribeLogDirsResponse.LogDirInfo>> entry: integerMapMap.entrySet()){
+            Integer key = entry.getKey();
+            Map<String, DescribeLogDirsResponse.LogDirInfo> value = entry.getValue();
+            System.out.println(key+" ---> "+ value);
+        }
+    }
 
 
     public static void listConsumerGroupOffsets(String groupId) throws ExecutionException, InterruptedException {
@@ -85,6 +118,12 @@ public class KafkaAdminClientTest {
         ListTopicsResult result = adminClient.listTopics(listTopicsOptions);
         Collection<TopicListing> list = result.listings().get();
         System.out.println(list);
+    }
+
+    private static void shutdown() {
+        if (adminClient != null) {
+            adminClient.close();
+        }
     }
 
 
