@@ -10,7 +10,7 @@ import java.util.Arrays;
 
 
 public class KafkaConsumerService {
-    static final String server = "192.168.138.131:9092";
+    static final String server = "192.168.19.136:9092,192.168.19.137:9092,192.168.19.138:9092";
     static final String groupId = "xj-0";
     public static void main(String[] args) {
         KafkaBuilder<String, JSONObject, JSONObject> builder = new KafkaBuilder<>();

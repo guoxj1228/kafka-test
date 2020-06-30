@@ -6,7 +6,7 @@ import org.apache.kafka.clients.producer.ProducerRecord;
 
 public class KafkaProducerService {
     private static Producer<String, String> producer;
-    static final String server = "192.168.138.131:9092";
+    static final String server = "192.168.19.136:9092,192.168.19.137:9092,192.168.19.138:9092";
 
 
     public static void main(String[] args) {
