@@ -5,13 +5,11 @@ import org.apache.kafka.clients.admin.*;
 import org.apache.kafka.clients.consumer.OffsetAndMetadata;
 import org.apache.kafka.common.KafkaFuture;
 import org.apache.kafka.common.TopicPartition;
-import org.apache.kafka.common.acl.AccessControlEntry;
-import org.apache.kafka.common.acl.AclBinding;
-import org.apache.kafka.common.acl.AclOperation;
-import org.apache.kafka.common.acl.AclPermissionType;
+import org.apache.kafka.common.acl.*;
 import org.apache.kafka.common.requests.DescribeLogDirsResponse;
 import org.apache.kafka.common.resource.PatternType;
 import org.apache.kafka.common.resource.ResourcePattern;
+import org.apache.kafka.common.resource.ResourcePatternFilter;
 import org.apache.kafka.common.resource.ResourceType;
 
 import java.io.FileInputStream;
@@ -122,6 +120,22 @@ public class KafkaAdminClientTest {
             OffsetAndMetadata value = entry.getValue();
             System.out.println(key+" ---> "+value);
         }
+    }
+
+    public static void test(){
+//        adminClient.deleteRecords();
+//        adminClient.createDelegationToken()
+    }
+
+    public static void deleteAcls(){
+
+        ResourcePatternFilter patternFilter = new ResourcePatternFilter(ResourceType.TOPIC, "name", PatternType.LITERAL);
+        AccessControlEntryFilter entryFilter = new AccessControlEntryFilter("user:reader", "*", AclOperation.READ, AclPermissionType.ALLOW);
+        AclBindingFilter aclBindingFilter = new AclBindingFilter(patternFilter, entryFilter);
+        ArrayList<AclBindingFilter> aclBindingFilters = new ArrayList<>();
+        aclBindingFilters.add(aclBindingFilter);
+
+        adminClient.deleteAcls(aclBindingFilters);
     }
 
     public static void createAcl() throws ExecutionException, InterruptedException {
