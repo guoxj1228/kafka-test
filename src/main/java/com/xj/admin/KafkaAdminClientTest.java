@@ -135,11 +135,11 @@ public class KafkaAdminClientTest {
 
         ResourcePattern pattern1 = new ResourcePattern(ResourceType.TOPIC, "test0", PatternType.LITERAL);
         AccessControlEntry entry1 = new AccessControlEntry("User:reader", "*", AclOperation.READ, AclPermissionType.ALLOW);
-        AclBinding aclBinding1 = new AclBinding(pattern, entry);
+        AclBinding aclBinding1 = new AclBinding(pattern1, entry1);
 
         ResourcePattern pattern2 = new ResourcePattern(ResourceType.GROUP, "xj-0", PatternType.LITERAL);
         AccessControlEntry entry2 = new AccessControlEntry("User:reader", "*", AclOperation.READ, AclPermissionType.ALLOW);
-        AclBinding aclBinding2 = new AclBinding(pattern, entry);
+        AclBinding aclBinding2 = new AclBinding(pattern2, entry2);
 
         aclBindings.add(aclBinding1);
         aclBindings.add(aclBinding2);
