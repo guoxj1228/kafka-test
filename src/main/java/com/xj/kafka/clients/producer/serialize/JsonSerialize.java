@@ -1,4 +1,4 @@
-package com.xj.serialize;
+package com.xj.kafka.clients.producer.serialize;
 
 import com.alibaba.fastjson.JSONObject;
 import org.apache.kafka.common.serialization.Serializer;

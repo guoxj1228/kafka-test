@@ -1,4 +1,4 @@
-package com.xj;
+package com.xj.kafka.clients.producer;
 
 import static org.junit.Assert.assertTrue;
 

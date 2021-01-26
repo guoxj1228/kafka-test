@@ -1,4 +1,4 @@
-package com.xj.producer;
+package com.xj.kafka.clients.producer.producer;
 
 import com.alibaba.fastjson.JSONObject;
 import org.apache.kafka.clients.consumer.Consumer;
@@ -11,7 +11,7 @@ import java.util.Arrays;
 
 public class KafkaConsumerService {
     static final String server = "192.168.19.136:9092,192.168.19.137:9092,192.168.19.138:9092";
-    static final String groupId = "xj-0";
+    static final String groupId = "xj0";
     public static void main(String[] args) {
         KafkaBuilder<String, JSONObject, JSONObject> builder = new KafkaBuilder<>();
         Consumer<String, JSONObject> consumer = builder.builderConsumer(server, groupId);

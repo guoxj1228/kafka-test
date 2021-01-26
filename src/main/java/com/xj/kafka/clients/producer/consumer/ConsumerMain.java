@@ -1,4 +1,4 @@
-package com.xj.consumer;
+package com.xj.kafka.clients.producer.consumer;
 
 public class ConsumerMain {
     private static int consumerNum = 3;

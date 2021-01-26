@@ -1,4 +1,4 @@
-package com.xj.consumer;
+package com.xj.kafka.clients.producer.consumer;
 
 import org.apache.kafka.clients.consumer.KafkaConsumer;
 import java.util.*;

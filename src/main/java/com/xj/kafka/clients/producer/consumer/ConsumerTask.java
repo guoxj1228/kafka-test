@@ -1,4 +1,4 @@
-package com.xj.consumer;
+package com.xj.kafka.clients.producer.consumer;
 
 public interface ConsumerTask {
 
